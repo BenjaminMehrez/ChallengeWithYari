@@ -32,7 +32,7 @@ async def add_pokemon_to_user(user_id: UUID, pokemon_id: int, db: Session = Depe
 
 @router.get("/{user_id}/pokemons", response_model=List[Pokemon])
 def get_user_pokemons(user_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if current_user.id != user_id and not current_user.is_superuser:
+    if current_user.id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"
@@ -124,7 +124,7 @@ def update_user(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    if current_user.id != user_id and not current_user.is_superuser:
+    if current_user.id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions"

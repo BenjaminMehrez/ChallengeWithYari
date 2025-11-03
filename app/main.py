@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import get_settings
@@ -27,9 +28,11 @@ app.add_middleware(
 
 
 # Create tables to start
-@app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app:app):
     create_tables()
+    yield
+
 
 
 # Routers

@@ -23,4 +23,4 @@ class User(Base):
   updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
   def __repr__(self):
-    return f"<User(email='{self.email}', username='{self.username}', is_active='{self.is_active}', pokemons='{self.pokemons}')>"
+    return f"<User(id='{self.id}', email='{self.email}', username='{self.username}', pokemons='{self.pokemons}', is_active='{self.is_active}', is_superuser='{self.is_superuser})>"
