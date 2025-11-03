@@ -7,6 +7,8 @@ from pwdlib import PasswordHash
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+
+from app.modules.auth.schema import TokenData
 from .config import get_settings
 from .database import get_db
 from uuid import UUID
@@ -14,7 +16,7 @@ from uuid import UUID
 settings = get_settings()
 
 pwd_context = PasswordHash.recommended()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/v1/login")
 
 
 
@@ -38,7 +40,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
   return encoded_jwt
 
 
-def verify_token(token: str) -> dict:
+def verify_token(token: str) -> TokenData:
   try:
     payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     return payload
