@@ -35,11 +35,7 @@ async def test_add_pokemon_to_user(async_client):
     assert response.status_code == 200
 
 
-def test_delete_pokemon_from_user(client: TestClient, test_user, db_session):
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+def test_delete_pokemon_from_user(client: TestClient, test_user):
     login_response = client.post(
         "/api/v1/auth/login",
         json={
@@ -57,11 +53,7 @@ def test_delete_pokemon_from_user(client: TestClient, test_user, db_session):
     assert response.status_code == 200
 
 
-def test_get_user_pokemons(client: TestClient, test_user, db_session):
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+def test_get_user_pokemons(client: TestClient, test_user):
     login_response = client.post(
         "/api/v1/auth/login",
         json={
@@ -79,11 +71,7 @@ def test_get_user_pokemons(client: TestClient, test_user, db_session):
     assert response.status_code == 200
 
 
-def test_update_user_pokemons(client: TestClient, db_session, test_user):
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+def test_update_user_pokemons(client: TestClient, test_user):
     login_response = client.post(
         "/api/v1/auth/login",
         json={
@@ -114,11 +102,7 @@ def test_get_users(client: TestClient, auth_headers):
     assert response.status_code == 200
 
 
-def test_get_user(client: TestClient, auth_headers, test_user, db_session):
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+def test_get_user(client: TestClient, auth_headers, test_user):
     response = client.get(
         f"/api/v1/users/{test_user.id}", headers=auth_headers)
     assert response.status_code == 200
@@ -126,11 +110,7 @@ def test_get_user(client: TestClient, auth_headers, test_user, db_session):
     assert response.json()['id'] == str(test_user.id)
 
 
-def test_update_user(client: TestClient, db_session, test_user):
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+def test_update_user(client: TestClient, test_user):
     login_response = client.post(
         "/api/v1/auth/login",
         json={
@@ -150,16 +130,9 @@ def test_update_user(client: TestClient, db_session, test_user):
     assert response.json()['email'] == "udpatetest3@example.com"
     assert response.json()['id'] == str(test_user.id)
 
+
 @pytest.mark.asyncio
-async def test_deactivate_user(async_client, client: TestClient, db_session, test_user,  test_user_admin):
-    db_session.add(test_user_admin)
-    db_session.commit()
-    db_session.refresh(test_user_admin)
-
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+async def test_deactivate_user(async_client, client: TestClient, test_user,  test_user_admin):
     login_response = await async_client.post(
         "/api/v1/auth/login",
         json={
@@ -177,16 +150,7 @@ async def test_deactivate_user(async_client, client: TestClient, db_session, tes
     assert response.json()['is_active'] == False
 
 @pytest.mark.asyncio
-async def test_activate_user(async_client, client: TestClient, db_session, test_user_deactivate,  test_user_admin):
-    db_session.add(test_user_admin)
-    db_session.commit()
-    db_session.refresh(test_user_admin)
-
-    db_session.add(test_user_deactivate)
-    db_session.commit()
-    db_session.refresh(test_user_deactivate)
-
-
+async def test_activate_user(async_client, client: TestClient, test_user_deactivate,  test_user_admin):
     login_response = await async_client.post(
         "/api/v1/auth/login",
         json={
@@ -206,16 +170,7 @@ async def test_activate_user(async_client, client: TestClient, db_session, test_
 
 
 @pytest.mark.asyncio
-async def test_delete_user(async_client, client: TestClient, db_session, test_user,  test_user_admin):
-    db_session.add(test_user_admin)
-    db_session.commit()
-    db_session.refresh(test_user_admin)
-
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
-
+async def test_delete_user(async_client, client: TestClient, test_user, test_user_admin):
     login_response = await async_client.post(
         "/api/v1/auth/login",
         json={

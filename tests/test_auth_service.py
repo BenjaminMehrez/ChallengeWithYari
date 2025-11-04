@@ -19,7 +19,7 @@ class TestAuthService:
     db_session.commit()
     db_session.refresh(test_user)
 
-    user = auth_service.authenticate_user("test@example.com", "password123")
+    user = auth_service.authenticate_user("usertest@example.com", "password123")
     assert user is not False or None
     assert user.email == test_user.email
 
@@ -51,4 +51,4 @@ def test_create_and_verify_token(db_session, test_user, auth_service):
 
     token_data = verify_token(token)
     assert UUID(token_data['sub']) == request.id
-    assert auth_service.authenticate_user("test@example.com", "wrong123") is None
+    assert auth_service.authenticate_user("usertest@example.com", "wrong123") is None

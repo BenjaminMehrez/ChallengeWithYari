@@ -2,11 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_login(async_client, test_user, db_session):
-    db_session.add(test_user)
-    db_session.commit()
-    db_session.refresh(test_user)
-
+async def test_login(async_client, test_user):
     login_response = await async_client.post(
         "/api/v1/auth/login",
         json={

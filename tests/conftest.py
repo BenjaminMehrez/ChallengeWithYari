@@ -12,15 +12,19 @@ from app.modules.auth.schema import TokenData
 from app.core.security import get_password_hash
 from app.modules.users.service import UserService
 from app.rate_limiting import limiter
+from app.core.config import get_settings
+
+
+settings = get_settings()
 
 
 @pytest.fixture(scope="function")
 def db_session():
     # Use a unique database URL for testing
-    DATABASE_TEST_URL = "sqlite:///./test.db"
     engine = create_engine(
-        DATABASE_TEST_URL,
-        connect_args={"check_same_thread": False}
+        settings.DATABASE_TEST_URL,
+        pool_pre_ping=True,
+        echo=False 
     )
     TestingSessionLocal = sessionmaker(
         autocommit=False,
@@ -38,13 +42,13 @@ def db_session():
 
 
 @pytest.fixture(scope="function")
-def test_user():
+def test_user(db_session):
     # Create a user with a known password hash
     password_hash = get_password_hash("password123")
-    return User(
+    user = User(
         id=uuid4(),
-        email="test@example.com",
-        username="Test",
+        email="usertest@example.com",
+        username="userTest",
         hashed_password=password_hash,
         pokemons=[
             {
@@ -55,13 +59,18 @@ def test_user():
         is_active=True,
         is_superuser=False
     )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    db_session.expunge(user) # Desacopla el objeto de la sesión pero mantiene los datos
+    return user
 
 
 @pytest.fixture(scope="function")
-def test_user_admin():
+def test_user_admin(db_session):
     # Create a user with a known password hash
     password_hash = get_password_hash("password123")
-    return User(
+    user =  User(
         id=uuid4(),
         email="testadmin@example.com",
         username="admin",
@@ -75,12 +84,17 @@ def test_user_admin():
         is_active=True,
         is_superuser=True
     )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    db_session.expunge(user) # Desacopla el objeto de la sesión pero mantiene los datos
+    return user
 
 @pytest.fixture(scope="function")
-def test_user_deactivate():
+def test_user_deactivate(db_session):
     # Create a user with a known password hash
     password_hash = get_password_hash("password123")
-    return User(
+    user = User(
         id=uuid4(),
         email="testdeactivate@example.com",
         username="testdeactivate",
@@ -94,6 +108,11 @@ def test_user_deactivate():
         is_active=False,
         is_superuser=False
     )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    db_session.expunge(user) # Desacopla el objeto de la sesión pero mantiene los datos
+    return user
 
 
 @pytest.fixture(scope="function")
@@ -121,33 +140,6 @@ def client(db_session):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
-
-
-@pytest.fixture(scope="function")
-def auth_headers(client):
-    # Register a test user
-    response = client.post(
-        "/api/v1/users/register",
-        json={
-            "email": "testtt@example.com",
-            "username": "Testtt",
-            "password": "testpassword123"
-        }
-    )
-    assert response.status_code == 201
-
-    # Login to get access token
-    response = client.post(
-        "/api/v1/auth/login",
-        json={
-            "email": "testtt@example.com",
-            "password": "testpassword123",
-            "grant_type": "password"
-        }
-    )
-    assert response.status_code == 200
-    token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
 
 
 @pytest.fixture(scope="function")
@@ -189,8 +181,9 @@ async def async_client(db_session):
     app.dependency_overrides.clear()
 
 
-@pytest.fixture(scope='function')
-async def async_auth_headers(async_client):
+@pytest_asyncio.fixture(scope="function")
+async def auth_headers(async_client):
+    # Get access_token
     response = await async_client.post(
         "/api/v1/users/register",
         json={
@@ -199,9 +192,9 @@ async def async_auth_headers(async_client):
             "password": "testpassword123"
         }
     )
-
     assert response.status_code == 201
 
+    # Login to get access token
     response = await async_client.post(
         "/api/v1/auth/login",
         json={
@@ -211,5 +204,5 @@ async def async_auth_headers(async_client):
         }
     )
     assert response.status_code == 200
-    token = response.json()['access_token']
+    token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}

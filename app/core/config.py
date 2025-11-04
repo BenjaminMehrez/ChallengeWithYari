@@ -10,8 +10,8 @@ class Settings(BaseSettings):
   DEBUG: bool = False
 
   # Database
-  DATABASE_URL: str = 'sqlite:///./test.db' 
-
+  DATABASE_URL: str
+  DATABASE_TEST_URL: str
   # Security
   SECRET_KEY: str
   ALGORITHM: str = "HS256"
