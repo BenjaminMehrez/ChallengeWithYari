@@ -17,21 +17,20 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
+engine = create_engine(
+    "postgresql://postgres:postgres@localhost:5431/db_challenge_test",
+    pool_pre_ping=True,
+    echo=False 
+)
+
+TestingSessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
 @pytest.fixture(scope="function")
 def db_session():
-    # Use a unique database URL for testing
-    engine = create_engine(
-        settings.DATABASE_TEST_URL,
-        pool_pre_ping=True,
-        echo=False 
-    )
-    TestingSessionLocal = sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=engine
-    )
-
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     try:
@@ -39,6 +38,7 @@ def db_session():
     finally:
         db.close()
         Base.metadata.drop_all(bind=engine)
+
 
 
 @pytest.fixture(scope="function")

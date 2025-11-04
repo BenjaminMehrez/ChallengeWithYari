@@ -15,13 +15,29 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   db:
-    image: postgres:17
+    image: postgres:15-alpine
     environment:
       - POSTGRES_DB=db_challenge
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5430:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db_test:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=db_challenge_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data_test:/var/lib/postgresql/data
     ports:
       - "5431:5432"
     healthcheck:
@@ -30,6 +46,6 @@ services:
       timeout: 5s
       retries: 5
 
-
 volumes:
   postgres_data:
+  postgres_data_test:

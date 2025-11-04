@@ -10,11 +10,18 @@ from app.modules.pokemon.controller import router as pokemon_router
 
 settings = get_settings()
 
+# Create tables to start
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_tables()
+    yield
+
 
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    debug=settings.DEBUG
+    debug=settings.DEBUG,
+    lifespan=lifespan
 )
 
 
@@ -25,13 +32,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-# Create tables to start
-@asynccontextmanager
-async def lifespan(app:app):
-    create_tables()
-    yield
 
 
 
