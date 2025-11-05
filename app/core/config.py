@@ -1,6 +1,5 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
-from pydantic import ConfigDict
 
 
 class Settings(BaseSettings):
@@ -12,6 +11,7 @@ class Settings(BaseSettings):
   # Database
   DATABASE_URL: str
   DATABASE_TEST_URL: str
+  
   # Security
   SECRET_KEY: str
   ALGORITHM: str = "HS256"
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
 
   API_POKEMON: str
 
-  model_config = ConfigDict(env_file=".env")
+  model_config = SettingsConfigDict(env_file=".env")
 
 
 @lru_cache()

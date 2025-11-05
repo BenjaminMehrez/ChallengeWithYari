@@ -1,24 +1,31 @@
-from httpx import AsyncClient, ASGITransport
+# Standard library
+import os
 import pytest
 import pytest_asyncio
 from uuid import uuid4
+
+# Third party
+from dotenv import load_dotenv
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+# Local application
+from app.core.config import get_settings
 from app.core.database import Base
+from app.core.security import get_password_hash
+from app.modules.auth.schema import TokenData
 from app.modules.auth.service import AuthService
 from app.modules.pokemon.service import PokeAPIService
 from app.modules.users.models import User
-from app.modules.auth.schema import TokenData
-from app.core.security import get_password_hash
 from app.modules.users.service import UserService
 from app.rate_limiting import limiter
-from app.core.config import get_settings
 
 
 settings = get_settings()
 
 engine = create_engine(
-    "postgresql://postgres:postgres@localhost:5431/db_challenge_test",
+    settings.DATABASE_TEST_URL,
     pool_pre_ping=True,
     echo=False 
 )
@@ -29,15 +36,55 @@ TestingSessionLocal = sessionmaker(
     bind=engine
 )
 
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_db():
+    """Crear tablas antes de todos los tests"""
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
+
+
 @pytest.fixture(scope="function")
 def db_session():
-    Base.metadata.create_all(bind=engine)
-    db = TestingSessionLocal()
+    """Provee una sesión de BD limpia para cada test"""
+    connection = engine.connect()
+    transaction = connection.begin()
+    session = TestingSessionLocal(bind=connection)
+    
     try:
-        yield db
+        yield session
     finally:
-        db.close()
-        Base.metadata.drop_all(bind=engine)
+        session.close()
+        transaction.rollback()  # Rollback en lugar de drop/create
+        connection.close()
+
+
+@pytest.fixture(scope="function")
+def client(db_session):
+    """Cliente de prueba con BD sobrescrita"""
+    from app.main import app
+    from app.core.database import get_db
+    from fastapi.testclient import TestClient
+    
+    # Deshabilitar rate limiting
+    try:
+        limiter.enabled = False
+    except ImportError:
+        pass
+
+    def override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass 
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    with TestClient(app) as test_client:
+        yield test_client
+    
+    app.dependency_overrides.clear()
+
 
 
 
@@ -119,27 +166,6 @@ def test_user_deactivate(db_session):
 def test_token_data():
     return TokenData(user_id=str(uuid4()))
 
-
-@pytest.fixture(scope="function")
-def client(db_session):
-    from app.main import app
-    from app.core.database import get_db
-
-    # Disable rate limiting for test
-    limiter.reset()
-
-    def override_get_db():
-        try:
-            yield db_session
-        finally:
-            db_session.close()
-
-    app.dependency_overrides[get_db] = override_get_db
-
-    from fastapi.testclient import TestClient
-    with TestClient(app) as test_client:
-        yield test_client
-    app.dependency_overrides.clear()
 
 
 @pytest.fixture(scope="function")
