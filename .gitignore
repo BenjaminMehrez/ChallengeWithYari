@@ -3,3 +3,4 @@
 api.http
 __pycache__
 test.db
+.pytest_cache

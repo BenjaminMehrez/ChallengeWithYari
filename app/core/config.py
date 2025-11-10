@@ -10,7 +10,6 @@ class Settings(BaseSettings):
 
   # Database
   DATABASE_URL: str
-  DATABASE_TEST_URL: str
   
   # Security
   SECRET_KEY: str

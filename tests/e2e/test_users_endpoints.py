@@ -91,9 +91,7 @@ def test_update_user_pokemons(client: TestClient, test_user):
 
 
 def test_get_users_search(client: TestClient, auth_headers):
-    response = client.get(f"/api/v1/users/search", headers=auth_headers,
-                          params={"q": "test"}
-                          )
+    response = client.get(f"/api/v1/users/search/", headers=auth_headers, params={"q": "test"})
     assert response.status_code == 200
 
 

@@ -25,7 +25,7 @@ from app.rate_limiting import limiter
 settings = get_settings()
 
 engine = create_engine(
-    settings.DATABASE_TEST_URL,
+    settings.DATABASE_URL,
     pool_pre_ping=True,
     echo=False 
 )

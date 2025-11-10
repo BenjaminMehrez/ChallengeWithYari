@@ -56,7 +56,7 @@ def get_statistics(db: Session = Depends(get_db), current_user: User = Depends(g
     return user_service.get_user_statistics()
 
 
-@router.get("/search", response_model=List[UserResponse])
+@router.get("/search/", response_model=List[UserResponse])
 def search_users(
     q: str = Query(..., min_length=1, description="Search term"),
     db: Session = Depends(get_db),

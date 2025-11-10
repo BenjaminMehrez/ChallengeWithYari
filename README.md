@@ -45,7 +45,6 @@ chmod 711 ./up_test.sh
 ## Errors to be fixed
 
 - Add Mock to PokeApi
-- Run test wiht Docker
 
 ## Stack
 
