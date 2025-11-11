@@ -9,9 +9,9 @@ jobs:
       name: python/default
       tag: '3.13'
     environment:
-      DATABASE_URL="sqlite:///./test.db"
-      SECRET_KEY=625e2e91ef6bbfed55d5dfee04832920548
-      API_POKEMON=https://pokeapi.co/api/v2
+      DATABASE_URL: "sqlite:///./test.db"
+      SECRET_KEY: 625e2e91ef6bbfed55d5dfee04832920548
+      API_POKEMON: https://pokeapi.co/api/v2
     steps:
       - checkout
 
