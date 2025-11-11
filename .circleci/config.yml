@@ -1,6 +1,6 @@
 version: 2.1
 
-orb:
+orbs:
   python: circleci/python@2.1.1
 
 jobs:
@@ -10,14 +10,39 @@ jobs:
       tag: '3.13'
     steps:
       - checkout
+
+      # Restaurar cache del venv
+      - restore_cache:
+          keys:
+            - venv-v1-{{ checksum "requirements.txt" }}
+            - venv-v1-
+
       - run:
         name: Setup Virtual Env
         command: |
           python3 -m venv .venv
           echo "source .venv/bin/activate" >> $BASH_ENV
+
       - run:
         name: Install Dependencies
         command: pip install -r requirements.txt
+
+      # Guardar cache del venv
+      - save_cache:
+          paths:
+            - .venv
+          key: venv-v1-{{ checksum "requirements.txt" }}
+      
+      - run:
+          name: Run Tests
+          command: pytest -v
+      
+      # Opcional: guardar resultados de tests
+      - store_test_results:
+          path: test-results
+      
+      - store_artifacts:
+          path: htmlcov
 
 workflows:
   build_test_deploy:
