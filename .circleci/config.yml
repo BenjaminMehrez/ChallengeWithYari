@@ -18,14 +18,14 @@ jobs:
             - venv-v1-
 
       - run:
-        name: Setup Virtual Env
-        command: |
-          python3 -m venv .venv
-          echo "source .venv/bin/activate" >> $BASH_ENV
+          name: Setup Virtual Env
+          command: |
+            python3 -m venv .venv
+            echo "source .venv/bin/activate" >> $BASH_ENV
 
       - run:
-        name: Install Dependencies
-        command: pip install -r requirements.txt
+          name: Install Dependencies
+          command: pip install -r requirements.txt
 
       # Guardar cache del venv
       - save_cache:
