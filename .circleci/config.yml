@@ -3,15 +3,16 @@ version: 2.1
 orbs:
   python: circleci/python@2.1.1
 
-- image: cimg/postgres:15.0
-  environment:
-    POSTGRES_DB: db_challenge_test
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-
 
 jobs:
   build_and_test:
+    docker:
+      - image: cimg/postgres:15.0
+        environment:
+          POSTGRES_DB: db_challenge_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
     executor:
       name: python/default
       tag: '3.13'
