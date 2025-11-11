@@ -1,0 +1,29 @@
+version: 2.1
+
+orb:
+  python: circleci/python@2.1.1
+
+jobs:
+  build_and_test:
+    executor:
+      name: python/default
+      tag: '3.13'
+    steps:
+      - checkout
+      - run:
+        name: Setup Virtual Env
+        command: |
+          python3 -m venv .venv
+          echo "source .venv/bin/activate" >> $BASH_ENV
+      - run:
+        name: Install Dependencies
+        command: pip install -r requirements.txt
+
+workflows:
+  build_test_deploy:
+    jobs:
+      - build_and_test:
+
+
+
+        
