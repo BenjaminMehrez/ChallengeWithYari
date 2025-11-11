@@ -3,13 +3,20 @@ version: 2.1
 orbs:
   python: circleci/python@2.1.1
 
+- image: cimg/postgres:15.0
+  environment:
+    POSTGRES_DB: db_challenge_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+
+
 jobs:
   build_and_test:
     executor:
       name: python/default
       tag: '3.13'
     environment:
-      DATABASE_URL: "sqlite:///./test.db"
+      DATABASE_URL: "postgresql://postgres:postgres@db_test:5432/db_challenge_test"
       SECRET_KEY: 625e2e91ef6bbfed55d5dfee04832920548
       API_POKEMON: https://pokeapi.co/api/v2
     steps:
@@ -38,7 +45,7 @@ jobs:
           key: venv-v1-{{ checksum "requirements.txt" }}
       
       - run:
-          name: Run Test
+          name: Run Tests
           command: pytest -v
       
       # Opcional: guardar resultados de tests
