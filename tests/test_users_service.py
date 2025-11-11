@@ -7,7 +7,7 @@ from app.modules.users.schemas import UserCreate, UserUpdate
 
 
 @pytest.mark.asyncio
-async def test_add_pokemon_to_user(db_session, test_user, users_service):
+async def test_add_pokemon_to_user(db_session, test_user, users_service, mock_pokeapi):
   db_session.add(test_user)
   db_session.commit()
   db_session.refresh(test_user)

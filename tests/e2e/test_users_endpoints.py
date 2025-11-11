@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 
 @pytest.mark.asyncio
-async def test_add_pokemon_to_user(async_client):
+async def test_add_pokemon_to_user(async_client, mock_pokeapi):
     register_response = await async_client.post(
         "/api/v1/users/register",
         json={
@@ -28,7 +28,7 @@ async def test_add_pokemon_to_user(async_client):
 
     # Ahora usa el token
     response = await async_client.post(
-        f"/api/v1/users/{register_response.json()['id']}/pokemons/5",
+        f"/api/v1/users/{register_response.json()['id']}/pokemons/6",
         headers=auth_headers
     )
 

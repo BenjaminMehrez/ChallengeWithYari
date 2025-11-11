@@ -1,11 +1,12 @@
 # Standard library
-import os
 import pytest
 import pytest_asyncio
+import respx
+import httpx
+from unittest.mock import Mock
 from uuid import uuid4
 
 # Third party
-from dotenv import load_dotenv
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -21,8 +22,168 @@ from app.modules.users.models import User
 from app.modules.users.service import UserService
 from app.rate_limiting import limiter
 
-
 settings = get_settings()
+
+
+MOCK_POKEMON_DATA = {
+    "pikachu": {
+        "id": 25,
+        "name": "pikachu",
+        "height": 4,
+        "weight": 60,
+        "base_experience": 112,
+        "types": [
+            {
+                "slot": 1,
+                "type": {
+                    "name": "electric",
+                    "url": "https://pokeapi.co/api/v2/type/13/"
+                }
+            }
+        ],
+        "sprites": {
+            "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+            "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/25.png"
+        },
+        "abilities": [
+            {
+                "ability": {
+                    "name": "static",
+                    "url": "https://pokeapi.co/api/v2/ability/9/"
+                },
+                "is_hidden": False,
+                "slot": 1
+            },
+            {
+                "ability": {
+                    "name": "lightning-rod",
+                    "url": "https://pokeapi.co/api/v2/ability/31/"
+                },
+                "is_hidden": True,
+                "slot": 3
+            }
+        ],
+        "stats": [
+            {"base_stat": 35, "stat": {"name": "hp"}},
+            {"base_stat": 55, "stat": {"name": "attack"}},
+            {"base_stat": 40, "stat": {"name": "defense"}},
+            {"base_stat": 50, "stat": {"name": "special-attack"}},
+            {"base_stat": 50, "stat": {"name": "special-defense"}},
+            {"base_stat": 90, "stat": {"name": "speed"}}
+        ]
+    },
+    "charizard": {
+        "id": 6,
+        "name": "charizard",
+        "height": 17,
+        "weight": 905,
+        "base_experience": 267,
+        "types": [
+            {
+                "slot": 1,
+                "type": {
+                    "name": "fire",
+                    "url": "https://pokeapi.co/api/v2/type/10/"
+                }
+            },
+            {
+                "slot": 2,
+                "type": {
+                    "name": "flying",
+                    "url": "https://pokeapi.co/api/v2/type/3/"
+                }
+            }
+        ],
+        "sprites": {
+            "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+        },
+        "abilities": [
+            {
+                "ability": {
+                    "name": "blaze",
+                    "url": "https://pokeapi.co/api/v2/ability/66/"
+                },
+                "is_hidden": False,
+                "slot": 1
+            }
+        ],
+        "stats": [
+            {"base_stat": 78, "stat": {"name": "hp"}},
+            {"base_stat": 84, "stat": {"name": "attack"}},
+            {"base_stat": 78, "stat": {"name": "defense"}},
+            {"base_stat": 109, "stat": {"name": "special-attack"}},
+            {"base_stat": 85, "stat": {"name": "special-defense"}},
+            {"base_stat": 100, "stat": {"name": "speed"}}
+        ]
+    },
+    "bulbasaur": {
+        "id": 1,
+        "name": "bulbasaur",
+        "height": 7,
+        "weight": 69,
+        "base_experience": 64,
+        "types": [
+            {
+                "slot": 1,
+                "type": {
+                    "name": "grass",
+                    "url": "https://pokeapi.co/api/v2/type/12/"
+                }
+            },
+            {
+                "slot": 2,
+                "type": {
+                    "name": "poison",
+                    "url": "https://pokeapi.co/api/v2/type/4/"
+                }
+            }
+        ],
+        "sprites": {
+            "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+        },
+        "abilities": [
+            {
+                "ability": {
+                    "name": "overgrow",
+                    "url": "https://pokeapi.co/api/v2/ability/65/"
+                },
+                "is_hidden": False,
+                "slot": 1
+            }
+        ],
+        "stats": [
+            {"base_stat": 45, "stat": {"name": "hp"}},
+            {"base_stat": 49, "stat": {"name": "attack"}},
+            {"base_stat": 49, "stat": {"name": "defense"}},
+            {"base_stat": 65, "stat": {"name": "special-attack"}},
+            {"base_stat": 65, "stat": {"name": "special-defense"}},
+            {"base_stat": 45, "stat": {"name": "speed"}}
+        ]
+    }
+}
+
+@pytest_asyncio.fixture(scope="function")
+async def mock_pokeapi():
+    """ Mock automatico de PokeAPI usando respx. """
+    async with respx.mock:
+        # Mock for pokemon exists
+        for pokemon_name, data in MOCK_POKEMON_DATA.items():
+            # Mock pokemon by Name
+            respx.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_name}").mock(
+                return_value=httpx.Response(200, json=data)
+            )
+            # Mock pokemon by ID
+            respx.get(f"https://pokeapi.co/api/v2/pokemon/{data['id']}").mock(
+                return_value=httpx.Response(200, json=data)
+            )
+        
+        # Mock for pokemon not find
+        respx.get(url__regex=r"https://pokeapi\.co/api/v2/pokemon/.*").mock(
+            return_value=httpx.Response(404, json={"detail": "Not found"})
+        )
+        
+        yield
+
 
 engine = create_engine(
     settings.DATABASE_URL,
@@ -35,6 +196,8 @@ TestingSessionLocal = sessionmaker(
     autoflush=False,
     bind=engine
 )
+
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_db():
