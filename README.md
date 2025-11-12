@@ -6,6 +6,18 @@ Robust REST API built with FastAPI that manages users and their Pokémon collect
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/BenjaminMehrez/ChallengeWithYari/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/BenjaminMehrez/ChallengeWithYari/tree/main)
 
+[![Coverage Status](https://coveralls.io/repos/github/BenjaminMehrez/ChallengeWithYari/badge.svg?branch=main)](https://coveralls.io/github/BenjaminMehrez/ChallengeWithYari?branch=main)
+
+### How to run locally coveralls
+
+```
+pytest --cov=app --cov-report=term --cov-report=html
+
+# Abrir reporte HTML
+open htmlcov/index.html
+
+```
+
 ## Features
 
 ### User Management
