@@ -2,7 +2,13 @@
 
 Robust REST API built with FastAPI that manages users and their Pokémon collection, integrated with PokeAPI.
 
+## App Running on 
+
+- [SWAGGER](https://challengewithyari-production.up.railway.app/docs)
+
 ### Badges
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/BenjaminMehrez/ChallengeWithYari/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/BenjaminMehrez/ChallengeWithYari/tree/main)
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/BenjaminMehrez/ChallengeWithYari/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/BenjaminMehrez/ChallengeWithYari/tree/main)
 
@@ -116,8 +122,7 @@ chmod 711 ./up_test.sh
 
 ## Route
 
-- : [![API Swagger]](http://localhost:8000/docs)
-
+- Local: [API Swagger](http://localhost:8000/docs)
 
 ## Env vars should be defined
 
