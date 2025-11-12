@@ -10,8 +10,6 @@ Robust REST API built with FastAPI that manages users and their Pokémon collect
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/BenjaminMehrez/ChallengeWithYari/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/BenjaminMehrez/ChallengeWithYari/tree/main)
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/BenjaminMehrez/ChallengeWithYari/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/BenjaminMehrez/ChallengeWithYari/tree/main)
-
 [![Coverage Status](https://coveralls.io/repos/github/BenjaminMehrez/ChallengeWithYari/badge.svg?branch=main)](https://coveralls.io/github/BenjaminMehrez/ChallengeWithYari?branch=main)
 
 ### How to run locally coveralls
@@ -122,7 +120,7 @@ chmod 711 ./up_test.sh
 
 ## Route
 
-- Local: [API Swagger](http://localhost:8000/docs)
+- Local: [API-Swagger](http://localhost:8000/docs)
 
 ## Env vars should be defined
 
