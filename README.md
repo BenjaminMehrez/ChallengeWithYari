@@ -2,7 +2,7 @@
 
 Robust REST API built with FastAPI that manages users and their Pokémon collection, integrated with PokeAPI.
 
-## App Running on 
+## Deployed App Running on Railway
 
 - [SWAGGER](https://challengewithyari-production.up.railway.app/docs)
 
