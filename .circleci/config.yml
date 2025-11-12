@@ -4,7 +4,6 @@ orbs:
   python: circleci/python@2.1.1
   coveralls: coveralls/coveralls@2.2.5
 
-
 jobs:
   build_and_test:
     docker:
@@ -61,13 +60,12 @@ jobs:
       - run:
           name: Run Tests
           command: pytest -v
+
+      - run:
+          name: Upload Coverage to Coveralls
+          command: coveralls
+          when: always
       
-      # Opcional: guardar resultados de tests
-      - store_test_results:
-          path: test-results
-      
-      - store_artifacts:
-          path: htmlcov
 
 workflows:
   build_test_deploy:

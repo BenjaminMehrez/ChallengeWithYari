@@ -2,6 +2,10 @@
 
 Robust REST API built with FastAPI that manages users and their Pokémon collection, integrated with PokeAPI.
 
+### Badges
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/BenjaminMehrez/ChallengeWithYari/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/BenjaminMehrez/ChallengeWithYari/tree/main)
+
 ## Features
 
 ### User Management
