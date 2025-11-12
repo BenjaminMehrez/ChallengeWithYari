@@ -32,4 +32,5 @@ def get_db():
 
 
 def create_tables():
-  Base.metadata.create_all(bind=engine)
+    """Solo para testing o desarrollo. Migraciones en producción."""
+    Base.metadata.create_all(bind=engine)

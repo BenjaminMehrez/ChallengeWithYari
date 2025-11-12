@@ -1,17 +1,13 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
 from typing import Optional
 import jwt
 from jwt import PyJWTError
 from pwdlib import PasswordHash
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
 
 from app.modules.auth.schema import TokenData
 from .config import get_settings
-from .database import get_db
-from uuid import UUID
 
 settings = get_settings()
 
