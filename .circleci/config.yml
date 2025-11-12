@@ -7,19 +7,21 @@ orbs:
 jobs:
   build_and_test:
     docker:
+
+        # Contenedor principal con Python
+      - image: cimg/python:3.13
+        environment:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/db_challenge_test"
+          SECRET_KEY: "625e2e91ef6bbfed55d5dfee04832920548"
+          API_POKEMON: "https://pokeapi.co/api/v2"
+
+        # Contenedor DataBase
       - image: cimg/postgres:15.0
         environment:
           POSTGRES_DB: db_challenge_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
 
-    executor:
-      name: python/default
-      tag: '3.13'
-    environment:
-      DATABASE_URL: "postgresql://postgres:postgres@db_test:5432/db_challenge_test"
-      SECRET_KEY: 625e2e91ef6bbfed55d5dfee04832920548
-      API_POKEMON: https://pokeapi.co/api/v2
     steps:
       - checkout
 
@@ -28,11 +30,6 @@ jobs:
           keys:
             - venv-v1-{{ checksum "requirements.txt" }}
             - venv-v1-
-
-      - run:
-          name: Install Python
-          command: |
-            sudo apt install python3.10-venv
 
       - run:
           name: Setup Virtual Env
@@ -49,7 +46,17 @@ jobs:
           paths:
             - .venv
           key: venv-v1-{{ checksum "requirements.txt" }}
-      
+
+      # Esperar a que PostgreSQL esté listo
+      - run:
+          name: Wait for PostgreSQL
+          command: |
+            for i in {1..30}; do
+              pg_isready -h localhost -p 5432 -U postgres && break
+              echo "Waiting for postgres... ($i/30)"
+              sleep 2
+            done
+            
       - run:
           name: Run Tests
           command: pytest -v
