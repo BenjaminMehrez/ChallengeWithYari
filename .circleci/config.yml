@@ -63,7 +63,12 @@ jobs:
 
       - run:
           name: Upload Coverage to Coveralls
-          command: coveralls
+          command: |
+            if [ -n "$COVERALLS_REPO_TOKEN" ]; then
+              coveralls
+            else
+              echo "⚠️  COVERALLS_REPO_TOKEN not set, skipping coverage upload"
+            fi
           when: always
       
 
