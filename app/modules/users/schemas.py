@@ -9,7 +9,7 @@ from app.modules.pokemon.shemas import Pokemon
 class UserBase(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
-
+    gender: Optional[str] = None
 
 # Schema Create User
 class UserCreate(UserBase):
@@ -21,6 +21,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     username: Optional[str] = None
     password: Optional[str] = None
+    gender: Optional[str] = None
     is_active: Optional[bool] = None
     pokemons: Optional[List[Pokemon]] = None
 
