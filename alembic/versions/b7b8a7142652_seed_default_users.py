@@ -1,7 +1,7 @@
 """seed default users
 
-Revision ID: a1b2c3d4e5f6
-Revises: 6744f6cde0d2
+Revision ID: b7b8a7142652
+Revises: b7b8a7142651
 Create Date: 2025-11-13 12:00:00.000000
 
 """
@@ -16,8 +16,8 @@ import json
 from app.core.config import get_settings
 
 # revision identifiers, used by Alembic.
-revision: str = 'a1b2c3d4e5f6'
-down_revision: Union[str, Sequence[str], None] = '6744f6cde0d2'
+revision: str = 'b7b8a7142652'
+down_revision: Union[str, Sequence[str], None] = 'b7b8a7142651'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
