@@ -171,7 +171,6 @@ class UserService:
         db_user = User(
             email=user_data.email,
             username=user_data.username,
-            gender=user_data.gender,
             hashed_password=hashed_password,
             is_active=True,
             is_superuser=False,
@@ -216,9 +215,6 @@ class UserService:
 
         if user_data.is_active is not None:
             db_user.is_active = user_data.is_active
-
-        if user_data.gender is not None:
-            db_user.gender = user_data.gender
 
         # Save Changes
         return self.repository.update(db_user)

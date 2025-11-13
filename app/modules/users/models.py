@@ -13,7 +13,6 @@ class User(Base):
   email = Column(String, unique=True, index=True, nullable=False)
   username = Column(String, unique=True, index=True, nullable=False)
   hashed_password = Column(String, nullable=False)
-  gender = Column(String, nullable=True)
 
   pokemons = Column(JSON, default=list, nullable=False)
 
