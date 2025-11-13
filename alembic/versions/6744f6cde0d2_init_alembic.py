@@ -1,8 +1,8 @@
-"""add gender field to user
+"""init alembic
 
-Revision ID: 51bc53cf21ca
-Revises: 1c87ff811e10
-Create Date: 2025-11-13 00:04:39.643630
+Revision ID: 6744f6cde0d2
+Revises: 
+Create Date: 2025-11-13 10:48:07.859032
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '51bc53cf21ca'
-down_revision: Union[str, Sequence[str], None] = '1c87ff811e10'
+revision: str = '6744f6cde0d2'
+down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
