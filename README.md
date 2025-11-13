@@ -12,13 +12,6 @@ Robust REST API built with FastAPI that manages users and their Pokémon collect
 
 [![Coverage Status](https://coveralls.io/repos/github/BenjaminMehrez/ChallengeWithYari/badge.svg?branch=main)](https://coveralls.io/github/BenjaminMehrez/ChallengeWithYari?branch=main)
 
-### How to run locally coveralls
-
-```
-chmod 711 ./run_coverage.sh
-
-./run_coverage.sh
-```
 
 ## Features
 
@@ -105,3 +98,12 @@ chmod 711 ./up_test.sh
 ## Env vars should be defined
 
 To find an example of the values you can use .env.example
+
+
+### How to run locally coveralls
+
+```
+chmod 711 ./run_coverage.sh
+
+./run_coverage.sh
+```

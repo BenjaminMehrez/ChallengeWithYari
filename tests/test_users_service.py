@@ -1,5 +1,4 @@
 import pytest
-from typing import List
 from app.core.security import get_password_hash
 from app.modules.pokemon.shemas import Pokemon
 from app.modules.users.models import User

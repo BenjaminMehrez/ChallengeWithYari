@@ -1,16 +1,16 @@
-set -e
-
-docker-compose -f docker-compose-test.yml up --build --force-recreate -d
+docker-compose -f docker-compose.yml up --build --force-recreate -d
 sleep 5
 
-# Active venv
+# Activate venv
 if [ -d ".venv" ]; then
     source .venv/bin/activate
 else
-    python -m venv .venv
+    python3 -m venv .venv
     source .venv/bin/activate
+    pip install -r requirements-dev.txt
 fi
 
+# Run tests
 pytest --cov=app --cov-report=term --cov-report=html
-docker-compose -f docker-compose-test.yml down
+docker-compose -f docker-compose.yml down
 open htmlcov/index.html

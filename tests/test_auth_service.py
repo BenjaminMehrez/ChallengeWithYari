@@ -1,11 +1,6 @@
-import pytest
-from datetime import timedelta
 from uuid import uuid4, UUID
-from app.modules.auth.service import AuthService
-from fastapi.security import OAuth2PasswordRequestForm
 from app.modules.users.models import User
 from app.core.security import get_password_hash, verify_password, verify_token
-from app.modules.users.schemas import UserCreate, UserResponse
 
 class TestAuthService: 
   def test_verify_password(self):
