@@ -5,7 +5,6 @@ Revises: 6744f6cde0d2
 Create Date: 2025-11-13 12:00:00.000000
 
 """
-from nt import environ
 from typing import Sequence, Union
 from alembic import op
 from sqlalchemy.orm import Session
