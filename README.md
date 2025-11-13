@@ -15,11 +15,9 @@ Robust REST API built with FastAPI that manages users and their Pokémon collect
 ### How to run locally coveralls
 
 ```
-pytest --cov=app --cov-report=term --cov-report=html
+chmod 711 ./run_coverage.sh
 
-# Abrir reporte HTML
-open htmlcov/index.html
-
+./run_coverage.sh
 ```
 
 ## Features
@@ -52,6 +50,7 @@ open htmlcov/index.html
 
 ```
 chmod 711 ./up_dev.sh
+
 ./up_dev.sh
 ```
 
@@ -59,13 +58,9 @@ chmod 711 ./up_dev.sh
 
 ```
 chmod 711 ./up_test.sh
+
 ./up_test.sh
 ```
-
-## Errors to be fixed
-
-- Add CircleCi
-- Add Deploy
 
 ## Stack
 
@@ -87,36 +82,21 @@ chmod 711 ./up_test.sh
 
 ## Identified Areas for Improvement
 
-### Testing
-
-- Move test data to external files (fixtures)
-- Implement generic methods to mock endpoints
-- Add mocks for PokeAPI calls
-
 ## Error Handling
 
-- Improve exception handling (e.g., user already exists)
+- Improve exception handling.
 - Implement standardized error responses
 - Add more robust validations
  
 ### Database
 
-- Migrate from synchronize to migration system (Alembic)
-- Create initial data seed for development
 - Implement indexes to optimize queries
-
-### Deployment
-
-- Configure CI/CD pipeline
-- Add environment configurations (dev/staging/prod)
-- Document deployment process
 
 ## 📝 Notes
 
 - All CRUD operations are available for both main entities
 - Authentication is required for most endpoints
 - Pokémon data is retrieved in real-time from PokeAPI
-
 
 ## Route
 
