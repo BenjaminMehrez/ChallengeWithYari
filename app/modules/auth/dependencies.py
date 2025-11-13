@@ -1,15 +1,19 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from uuid import UUID
 
 from app.core.database import get_db
-from app.core.security import oauth2_scheme, verify_token
+from app.core.security import verify_token, security
 from app.modules.users.repository import UserRepository
 from app.modules.users.models import User
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)) -> User:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)) -> User:
+  # Get token
+  token = credentials.credentials
+
   # Verify and decode token
   payload = verify_token(token)
   user_id_str: str = payload.get("sub")
@@ -61,10 +65,3 @@ def require_superuser(current_user: User = Depends(get_current_user)) -> User:
       detail="Not enough permissions. Superuser access required."
     )
   return current_user
-
-
-def get_optional_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User | None:
-  try:
-    return get_current_user(token, db)
-  except HTTPException:
-    return None

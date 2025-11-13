@@ -5,7 +5,7 @@ from typing import List
 from app.core.database import get_db
 from .schemas import Pokemon, UserCreate, UserUpdate, UserResponse
 from .service import UserService
-from ..auth.dependencies import get_current_user
+from ..auth.dependencies import get_current_user, require_superuser
 from ...core.config import get_settings
 from .models import User
 
@@ -89,14 +89,8 @@ def update_user(
 def deactivate_user(
     user_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_superuser)
 ):
-    if not current_user.is_superuser:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only superusers can deactivate"
-        )
-
     user_service = UserService(db)
     return user_service.deactivate_user(user_id)
 
@@ -105,14 +99,8 @@ def deactivate_user(
 def activate_user(
     user_id: UUID,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_superuser)
 ):
-    if not current_user.is_superuser:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only superusers can deactivate"
-        )
-
     user_service = UserService(db)
     return user_service.activate_user(user_id)
 

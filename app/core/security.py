@@ -4,7 +4,7 @@ import jwt
 from jwt import PyJWTError
 from pwdlib import PasswordHash
 from fastapi import HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 
 from app.modules.auth.schema import TokenData
 from .config import get_settings
@@ -12,8 +12,7 @@ from .config import get_settings
 settings = get_settings()
 
 pwd_context = PasswordHash.recommended()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/v1/login")
-
+security = HTTPBearer()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
   return pwd_context.verify(plain_password, hashed_password)
