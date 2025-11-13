@@ -5,4 +5,3 @@ __pycache__
 test.db
 .pytest_cache
 .coverage
-alembic.ini
